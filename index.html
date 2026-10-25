@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#166534">
+<title>Kirana Saathi</title>
+<style>
+:root{--green:#166534;--green2:#15803d;--bg:#f3f7f4;--card:#fff;--text:#17231b;--muted:#66756a;--line:#dce7de;--red:#b91c1c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--green);color:white;padding:18px 16px 14px;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px #0001}
+header .top{display:flex;align-items:center;justify-content:space-between;gap:10px}h1{font-size:21px;margin:0}header p{margin:4px 0 0;font-size:12px;opacity:.9}
+select,button,input{font:inherit}button,select,input{border-radius:10px}select,input{border:1px solid var(--line);padding:11px;background:#fff;color:var(--text);width:100%;min-width:0}
+button{border:0;background:var(--green2);color:white;padding:11px 13px;font-weight:650;cursor:pointer}button.secondary{background:#e8f2ea;color:var(--green)}button.danger{background:#fee2e2;color:#991b1b}button.small{padding:7px 10px;font-size:12px}
+nav{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:8px;background:#fff;position:sticky;top:69px;z-index:4;border-bottom:1px solid var(--line)}
+nav button{background:transparent;color:var(--muted);padding:9px 2px;font-size:11px;border-radius:9px}nav button.active{background:#e4f3e7;color:var(--green);font-weight:800}
+main{max-width:850px;margin:auto;padding:14px 12px 35px}.page{display:none}.page.active{display:block}.section-title{font-size:18px;margin:8px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--card);padding:14px;border:1px solid var(--line);border-radius:15px;margin-bottom:11px;box-shadow:0 1px 3px #00000005}.metric{font-size:23px;font-weight:800;margin-top:5px}.muted{color:var(--muted);font-size:12px}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.stack{display:grid;gap:9px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 5px}.field.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.actions button{flex:1}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted);font-weight:650}.right{text-align:right}.pill{display:inline-block;padding:3px 7px;border-radius:20px;background:#e8f2ea;color:var(--green);font-size:11px}.empty{text-align:center;padding:20px;color:var(--muted)}.total{font-size:20px;font-weight:800}.notice{background:#fff7d6;border:1px solid #f0df9a;padding:10px;border-radius:10px;font-size:12px;margin-bottom:12px}.hidden{display:none!important}.line{height:1px;background:var(--line);margin:12px 0}
+@media(min-width:600px){main{padding:20px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}nav{top:69px}nav button{font-size:13px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><h1>🛒 <span id="brand">Kirana Saathi</span></h1><p id="tagline">Simple shop management</p></div><div style="width:105px"><select id="language" aria-label="Language"><option value="en">English</option><option value="te">తెలుగు</option></select></div></div></header>
+<nav id="nav">
+<button class="active" data-page="home">🏠 <span data-i="home">Home</span></button>
+<button data-page="billing">🧾 <span data-i="billing">Billing</span></button>
+<button data-page="stock">📦 <span data-i="stock">Stock</span></button>
+<button data-page="credit">👤 <span data-i="credit">Baki</span></button>
+<button data-page="reports">📊 <span data-i="reports">Reports</span></button>
+</nav>
+<main>
+<section class="page active" id="home">
+<h2 class="section-title" data-i="dashboard">Today at a glance</h2>
+<div class="grid">
+<div class="card"><div class="muted" data-i="salesToday">Today's sales</div><div class="metric" id="mSales">₹0</div></div>
+<div class="card"><div class="muted" data-i="expensesToday">Today's expenses</div><div class="metric" id="mExpenses">₹0</div></div>
+<div class="card"><div class="muted" data-i="profitToday">Estimated profit*</div><div class="metric" id="mProfit">₹0</div></div>
+<div class="card"><div class="muted" data-i="bakiDue">Customer baki due</div><div class="metric" id="mBaki">₹0</div></div>
+</div>
+<div class="card"><h3 data-i="quickActions">Quick actions</h3><div class="actions"><button onclick="showPage('billing')" data-i="newBill">＋ New bill</button><button class="secondary" onclick="showPage('stock')" data-i="addProduct">＋ Add product</button><button class="secondary" onclick="showPage('reports')" data-i="addExpense">＋ View reports / expenses</button></div></div>
+<div class="notice" data-i="profitNote">*Estimated profit = sale amount minus the recorded cost of sold items and expenses. Enter product cost prices for a useful estimate.</div>
+<div class="card"><h3 data-i="recentSales">Recent sales</h3><div id="recentSalesList"></div></div>
+<div class="card"><h3 data-i="backupTitle">Data backup</h3><p class="muted" data-i="backupDesc">Export a backup regularly. Data is stored on this device/browser.</p><div class="actions"><button onclick="exportData()" data-i="exportBackup">Export backup</button><button class="secondary" onclick="document.getElementById('importFile').click()" data-i="importBackup">Restore backup</button></div><input id="importFile" type="file" accept="application/json" class="hidden"></div>
+</section>
+<section class="page" id="billing">
+<h2 class="section-title" data-i="createBill">Create bill</h2>
+<div class="card">
+<div class="formgrid">
+<div class="field"><label data-i="product">Product</label><select id="billProduct"></select></div>
+<div class="field"><label data-i="quantity">Quantity</label><input id="billQty" type="number" min="1" step="1" value="1"></div>
+</div>
+<div class="actions"><button onclick="addToCart()" data-i="addToBill">Add to bill</button></div>
+<div class="line"></div>
+<div id="cartArea"></div>
+<div class="field" style="margin-top:10px"><label data-i="customerOptional">Customer name (optional)</label><input id="billCustomer" placeholder="Walk-in customer"></div>
+<div class="field" style="margin-top:10px"><label data-i="paymentType">Payment type</label><select id="paymentType"><option value="cash">Cash / UPI</option><option value="credit">Baki (credit)</option></select></div>
+<div class="field" style="margin-top:10px"><label data-i="amountPaid">Amount paid now (₹)</label><input id="amountPaid" type="number" min="0" step="0.01" value="0"></div>
+<div class="row" style="margin-top:12px"><span data-i="billTotal">Bill total</span><span class="total right" id="cartTotal">₹0.00</span></div>
+<div class="actions"><button onclick="completeSale()" data-i="completeSale">Complete sale</button><button class="secondary" onclick="clearCart()" data-i="clear">Clear</button></div>
+</div>
+<div class="card"><h3 data-i="expenses">Add expense</h3><div class="formgrid"><div class="field"><label data-i="expenseName">Expense name</label><input id="expenseName" placeholder="e.g. Transport"></div><div class="field"><label data-i="amount">Amount (₹)</label><input id="expenseAmount" type="number" min="0.01" step="0.01"></div></div><div class="actions"><button onclick="addExpense()" data-i="saveExpense">Save expense</button></div></div>
+</section>
+<section class="page" id="stock">
+<h2 class="section-title" data-i="stockManagement">Stock management</h2>
+<div class="card"><h3 data-i="addEditProduct">Add product</h3><input id="editProductId" type="hidden"><div class="formgrid">
+<div class="field full"><label data-i="productName">Product name</label><input id="pName" placeholder="e.g. Rice 1 kg"></div>
+<div class="field"><label data-i="sellingPrice">Selling price (₹)</label><input id="pPrice" type="number" min="0" step="0.01"></div>
+<div class="field"><label data-i="costPrice">Cost price (₹)</label><input id="pCost" type="number" min="0" step="0.01"></div>
+<div class="field"><label data-i="stockQty">Opening / added stock</label><input id="pStock" type="number" min="0" step="1"></div>
+<div class="field"><label data-i="lowStock">Low-stock alert at</label><input id="pLow" type="number" min="0" step="1" value="5"></div>
+</div><div class="actions"><button onclick="saveProduct()" data-i="saveProduct">Save product</button><button class="secondary" onclick="resetProductForm()" data-i="cancel">Cancel</button></div></div>
+<div class="card"><div class="row"><h3 data-i="productList">Products & stock</h3><input id="stockSearch" placeholder="Search" oninput="renderStock()" style="max-width:150px"></div><div id="stockTable" class="tablewrap"></div></div>
+</section>
+<section class="page" id="credit">
+<h2 class="section-title" data-i="customerBaki">Customer baki (credit)</h2>
+<div class="card"><p class="muted" data-i="bakiHelp">Credit bills create a balance automatically. Record a payment when a customer repays.</p><div id="creditTable" class="tablewrap"></div></div>
+<div class="card"><h3 data-i="recordPayment">Record baki payment</h3><div class="formgrid"><div class="field full"><label data-i="customer">Customer</label><select id="creditCustomer"></select></div><div class="field"><label data-i="amount">Amount (₹)</label><input id="creditPayment" type="number" min="0.01" step="0.01"></div></div><div class="actions"><button onclick="recordCreditPayment()" data-i="savePayment">Save payment</button></div></div>
+</section>
+<section class="page" id="reports">
+<h2 class="section-title" data-i="reports">Reports</h2>
+<div class="card"><div class="row"><div class="field"><label data-i="fromDate">From date</label><input type="date" id="reportFrom"></div><div class="field"><label data-i="toDate">To date</label><input type="date" id="reportTo"></div></div><div class="actions"><button onclick="renderReports()" data-i="showReport">Show report</button><button class="secondary" onclick="setThisMonth()" data-i="thisMonth">This month</button></div></div>
+<div class="grid"><div class="card"><div class="muted" data-i="sales">Sales</div><div class="metric" id="rSales">₹0</div></div><div class="card"><div class="muted" data-i="costOfGoods">Item cost</div><div class="metric" id="rCost">₹0</div></div><div class="card"><div class="muted" data-i="expenses">Expenses</div><div class="metric" id="rExpenses">₹0</div></div><div class="card"><div class="muted" data-i="netProfit">Estimated net profit</div><div class="metric" id="rProfit">₹0</div></div></div>
+<div class="card"><h3 data-i="salesHistory">Sales history</h3><div id="salesHistoryTable" class="tablewrap"></div></div>
+<div class="card"><h3 data-i="expenseHistory">Expense history</h3><div id="expenseHistoryTable" class="tablewrap"></div></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const translations={
+en:{home:"Home",billing:"Billing",stock:"Stock",credit:"Baki",reports:"Reports",dashboard:"Today at a glance",salesToday:"Today's sales",expensesToday:"Today's expenses",profitToday:"Estimated profit*",bakiDue:"Customer baki due",quickActions:"Quick actions",newBill:"＋ New bill",addProduct:"＋ Add product",addExpense:"＋ View reports / expenses",profitNote:"*Estimated profit = sale amount minus the recorded cost of sold items and expenses. Enter product cost prices for a useful estimate.",recentSales:"Recent sales",backupTitle:"Data backup",backupDesc:"Export a backup regularly. Data is stored on this device/browser.",exportBackup:"Export backup",importBackup:"Restore backup",createBill:"Create bill",product:"Product",quantity:"Quantity",addToBill:"Add to bill",customerOptional:"Customer name (optional)",paymentType:"Payment type",amountPaid:"Amount paid now (₹)",billTotal:"Bill total",completeSale:"Complete sale",clear:"Clear",expenses:"Add expense",expenseName:"Expense name",amount:"Amount (₹)",saveExpense:"Save expense",stockManagement:"Stock management",addEditProduct:"Add product",productName:"Product name",sellingPrice:"Selling price (₹)",costPrice:"Cost price (₹)",stockQty:"Opening / added stock",lowStock:"Low-stock alert at",saveProduct:"Save product",cancel:"Cancel",productList:"Products & stock",customerBaki:"Customer baki (credit)",bakiHelp:"Credit bills create a balance automatically. Record a payment when a customer repays.",recordPayment:"Record baki payment",customer:"Customer",savePayment:"Save payment",fromDate:"From date",toDate:"To date",showReport:"Show report",thisMonth:"This month",sales:"Sales",costOfGoods:"Item cost",netProfit:"Estimated net profit",salesHistory:"Sales history",expenseHistory:"Expense history"},
+te:{home:"హోమ్",billing:"బిల్లింగ్",stock:"స్టాక్",credit:"బాకీ",reports:"రిపోర్ట్స్",dashboard:"ఈ రోజు వివరాలు",salesToday:"ఈ రోజు అమ్మకాలు",expensesToday:"ఈ రోజు ఖర్చులు",profitToday:"అంచనా లాభం*",bakiDue:"కస్టమర్ బాకీ",quickActions:"త్వరిత పనులు",newBill:"＋ కొత్త బిల్",addProduct:"＋ వస్తువు చేర్చు",addExpense:"＋ రిపోర్ట్స్ / ఖర్చులు",profitNote:"*అంచనా లాభం = అమ్మకాలు − అమ్మిన వస్తువుల కొనుగోలు ఖర్చు − ఇతర ఖర్చులు. సరైన అంచనాకు కొనుగోలు ధర నమోదు చేయండి.",recentSales:"ఇటీవలి అమ్మకాలు",backupTitle:"డేటా బ్యాకప్",backupDesc:"తరచుగా బ్యాకప్ తీసుకోండి. డేటా ఈ ఫోన్/బ్రౌజర్‌లో నిల్వ ఉంటుంది.",exportBackup:"బ్యాకప్ డౌన్‌లోడ్",importBackup:"బ్యాకప్ రీస్టోర్",createBill:"బిల్ తయారు చేయండి",product:"వస్తువు",quantity:"పరిమాణం",addToBill:"బిల్‌లో చేర్చు",customerOptional:"కస్టమర్ పేరు (ఐచ్ఛికం)",paymentType:"చెల్లింపు రకం",amountPaid:"ఇప్పుడు చెల్లించిన మొత్తం (₹)",billTotal:"మొత్తం బిల్",completeSale:"అమ్మకం పూర్తి",clear:"క్లియర్",expenses:"ఖర్చు నమోదు",expenseName:"ఖర్చు పేరు",amount:"మొత్తం (₹)",saveExpense:"ఖర్చు సేవ్",stockManagement:"స్టాక్ నిర్వహణ",addEditProduct:"వస్తువు చేర్చండి",productName:"వస్తువు పేరు",sellingPrice:"అమ్మకపు ధర (₹)",costPrice:"కొనుగోలు ధర (₹)",stockQty:"ప్రారంభ / జోడించే స్టాక్",lowStock:"తక్కువ స్టాక్ హెచ్చరిక",saveProduct:"వస్తువు సేవ్",cancel:"రద్దు",productList:"వస్తువులు & స్టాక్",customerBaki:"కస్టమర్ బాకీ",bakiHelp:"క్రెడిట్ బిల్‌తో బాకీ ఆటోమేటిక్‌గా చేరుతుంది. కస్టమర్ చెల్లించినప్పుడు నమోదు చేయండి.",recordPayment:"బాకీ చెల్లింపు నమోదు",customer:"కస్టమర్",savePayment:"చెల్లింపు సేవ్",fromDate:"ప్రారంభ తేదీ",toDate:"ముగింపు తేదీ",showReport:"రిపోర్ట్ చూపించు",thisMonth:"ఈ నెల",sales:"అమ్మకాలు",costOfGoods:"వస్తువుల ఖర్చు",netProfit:"అంచనా నికర లాభం",salesHistory:"అమ్మకాల చరిత్ర",expenseHistory:"ఖర్చుల చరిత్ర"}
+};
+let db=JSON.parse(localStorage.getItem('kirana_db_v1')||'{"products":[],"sales":[],"expenses":[],"payments":[]}');
+let cart=[];
+const today=()=>new Date().toISOString().slice(0,10);
+const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const save=()=>{localStorage.setItem('kirana_db_v1',JSON.stringify(db));renderAll()};
+function showPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===p));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));if(p==='billing')renderBillProducts();if(p==='credit')renderCredit();if(p==='reports')renderReports();window.scrollTo(0,0)}
+$('nav').addEventListener('click',e=>{let b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page)});
+function applyLanguage(){let t=translations[$('language').value];document.querySelectorAll('[data-i]').forEach(el=>{let k=el.dataset.i;if(t[k])el.textContent=t[k]});document.documentElement.lang=$('language').value==='te'?'te':'en'}
+$('language').addEventListener('change',applyLanguage);
+function saveProduct(){let name=$('pName').value.trim(),price=+$('pPrice').value,cost=+$('pCost').value,stock=+$('pStock').value,low=+$('pLow').value,id=$('editProductId').value;if(!name||$('pPrice').value===''||$('pCost').value===''||$('pStock').value===''||price<0||cost<0||stock<0){alert('Enter product name, prices and stock.');return}if(id){let p=db.products.find(x=>x.id===id);if(p){p.name=name;p.price=price;p.cost=cost;p.stock+=stock;p.low=low}}else db.products.push({id:crypto.randomUUID(),name,price,cost,stock,low});resetProductForm();save()}
+function resetProductForm(){$('editProductId').value='';$('pName').value='';$('pPrice').value='';$('pCost').value='';$('pStock').value='';$('pLow').value=5}
+function editProduct(id){let p=db.products.find(x=>x.id===id);if(!p)return;$('editProductId').value=id;$('pName').value=p.name;$('pPrice').value=p.price;$('pCost').value=p.cost;$('pStock').value=0;$('pLow').value=p.low;window.scrollTo(0,0)}
+function deleteProduct(id){if(confirm('Delete this product? Sales history will remain.')){db.products=db.products.filter(p=>p.id!==id);save()}}
+function renderStock(){let q=($('stockSearch').value||'').toLowerCase(),ps=db.products.filter(p=>p.name.toLowerCase().includes(q));$('stockTable').innerHTML=ps.length?`<table><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Action</th></tr></thead><tbody>${ps.map(p=>`<tr><td>${esc(p.name)} ${p.stock<=p.low?'<span class="pill">Low</span>':''}<div class="muted">Cost ${money(p.cost)}</div></td><td>${money(p.price)}</td><td>${p.stock}</td><td><button class="small secondary" onclick="editProduct('${p.id}')">Edit / add stock</button> <button class="small danger" onclick="deleteProduct('${p.id}')">×</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No products yet. Add your first product above.</div>';renderBillProducts()}
+function renderBillProducts(){$('billProduct').innerHTML=db.products.length?db.products.map(p=>`<option value="${p.id}">${esc(p.name)} — ${money(p.price)} (stock ${p.stock})</option>`).join(''):'<option value="">Add products in Stock first</option>'}
+function addToCart(){let p=db.products.find(x=>x.id===$('billProduct').value),qty=Math.floor(+$('billQty').value);if(!p){alert('Please add a product first.');return}if(!qty||qty<1){alert('Enter a valid quantity.');return}let existing=cart.find(x=>x.id===p.id),wanted=(existing?.qty||0)+qty;if(wanted>p.stock){alert('Not enough stock. Available: '+p.stock);return}if(existing)existing.qty+=qty;else cart.push({id:p.id,name:p.name,price:p.price,cost:p.cost,qty});$('billQty').value=1;renderCart()}
+function renderCart(){$('cartArea').innerHTML=cart.length?`<div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Amount</th><th></th></tr></thead><tbody>${cart.map((x,i)=>`<tr><td>${esc(x.name)}</td><td>${x.qty}</td><td>${money(x.qty*x.price)}</td><td><button class="small danger" onclick="removeCart(${i})">×</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">Bill is empty</div>';$('cartTotal').textContent=money(cart.reduce((s,x)=>s+x.qty*x.price,0));}
+function removeCart(i){cart.splice(i,1);renderCart()}function clearCart(){cart=[];renderCart()}
+function completeSale(){if(!cart.length){alert('Add items to the bill first.');return}for(let x of cart){let p=db.products.find(p=>p.id===x.id);if(!p||p.stock<x.qty){alert('Stock changed. Please check bill.');return}}let total=cart.reduce((s,x)=>s+x.qty*x.price,0),paid=Math.max(0,+$('amountPaid').value||0);if(paid>total){alert('Amount paid cannot be more than bill total.');return}let type=$('paymentType').value;if(type==='cash'&&paid===0){if(confirm('No payment entered. Record this as baki?'))type='credit';else return}if(type==='cash'&&paid<total){alert('For partial payment, select Baki and enter the amount paid.');return}let customer=$('billCustomer').value.trim()||'Walk-in customer';let sale={id:crypto.randomUUID(),date:today(),customer,items:cart.map(x=>({...x})),total,cost:cart.reduce((s,x)=>s+x.qty*x.cost,0),paid: type==='credit'?paid:total,baki:type==='credit'?total-paid:0};cart.forEach(x=>db.products.find(p=>p.id===x.id).stock-=x.qty);db.sales.push(sale);cart=[];$('billCustomer').value='';$('amountPaid').value=0;$('paymentType').value='cash';save();alert('Sale saved: '+money(total));showPage('billing')}
+function addExpense(){let name=$('expenseName').value.trim(),amount=+$('expenseAmount').value;if(!name||!amount||amount<=0){alert('Enter expense name and amount.');return}db.expenses.push({id:crypto.randomUUID(),date:today(),name,amount});$('expenseName').value='';$('expenseAmount').value='';save();alert('Expense saved')}
+function allBaki(){let o={};db.sales.forEach(s=>{if(s.baki>0)o[s.customer]=(o[s.customer]||0)+s.baki});db.payments.forEach(p=>{o[p.customer]=(o[p.customer]||0)-p.amount});return Object.entries(o).map(([customer,balance])=>({customer,balance:Math.max(0,balance)})).filter(x=>x.balance>0.009)}
+function renderCredit(){let rows=allBaki();$('creditTable').innerHTML=rows.length?`<table><thead><tr><th>Customer</th><th>Due</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.customer)}</td><td>${money(x.balance)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No customer baki due.</div>';let names=[...new Set(db.sales.filter(s=>s.baki>0).map(s=>s.customer))];$('creditCustomer').innerHTML=names.length?names.map(n=>`<option>${esc(n)}</option>`).join(''):'<option value="">No credit customers</option>'}
+function recordCreditPayment(){let customer=$('creditCustomer').value,amount=+$('creditPayment').value;if(!customer||!amount||amount<=0){alert('Select customer and enter payment.');return}let due=allBaki().find(x=>x.customer===customer)?.balance||0;if(amount>due+0.009){alert('Payment is more than balance due: '+money(due));return}db.payments.push({id:crypto.randomUUID(),date:today(),customer,amount});$('creditPayment').value='';save();alert('Payment recorded')}
+function daySum(arr,date,field){return arr.filter(x=>x.date===date).reduce((s,x)=>s+(+x[field]||0),0)}
+function renderHome(){let d=today(),sales=db.sales.filter(x=>x.date===d),sale=sales.reduce((s,x)=>s+x.total,0),cost=sales.reduce((s,x)=>s+x.cost,0),ex=daySum(db.expenses,d,'amount');$('mSales').textContent=money(sale);$('mExpenses').textContent=money(ex);$('mProfit').textContent=money(sale-cost-ex);$('mBaki').textContent=money(allBaki().reduce((s,x)=>s+x.balance,0));let recent=[...db.sales].slice(-5).reverse();$('recentSalesList').innerHTML=recent.length?`<table><thead><tr><th>Date</th><th>Customer</th><th>Total</th></tr></thead><tbody>${recent.map(s=>`<tr><td>${s.date}</td><td>${esc(s.customer)}</td><td>${money(s.total)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No sales recorded yet.</div>'}
+function setThisMonth(){let d=new Date();$('reportFrom').value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;$('reportTo').value=today();renderReports()}
+function renderReports(){if(!$('reportFrom').value){let d=new Date();$('reportFrom').value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`}$('reportTo').value=$('reportTo').value||today();let from=$('reportFrom').value,to=$('reportTo').value;if(from>to){alert('From date should be before To date.');return}let ss=db.sales.filter(x=>x.date>=from&&x.date<=to),ee=db.expenses.filter(x=>x.date>=from&&x.date<=to),sales=ss.reduce((s,x)=>s+x.total,0),cost=ss.reduce((s,x)=>s+x.cost,0),expenses=ee.reduce((s,x)=>s+x.amount,0);$('rSales').textContent=money(sales);$('rCost').textContent=money(cost);$('rExpenses').textContent=money(expenses);$('rProfit').textContent=money(sales-cost-expenses);$('salesHistoryTable').innerHTML=ss.length?`<table><thead><tr><th>Date</th><th>Customer</th><th>Total</th><th>Baki</th></tr></thead><tbody>${[...ss].reverse().map(s=>`<tr><td>${s.date}</td><td>${esc(s.customer)}</td><td>${money(s.total)}</td><td>${money(s.baki)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No sales in this period.</div>';$('expenseHistoryTable').innerHTML=ee.length?`<table><thead><tr><th>Date</th><th>Expense</th><th>Amount</th></tr></thead><tbody>${[...ee].reverse().map(e=>`<tr><td>${e.date}</td><td>${esc(e.name)}</td><td>${money(e.amount)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No expenses in this period.</div>'}
+function exportData(){let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kirana-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+$('importFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let data=JSON.parse(await f.text());if(!data.products||!data.sales||!data.expenses||!data.payments)throw Error('invalid');if(confirm('Replace current data with this backup?')){db=data;save();alert('Backup restored')}}catch(err){alert('Invalid backup file')}e.target.value=''});
+function renderAll(){renderStock();renderBillProducts();renderHome();renderCredit();renderReports()}
+if(!$('reportFrom').value)setThisMonth();renderAll();applyLanguage();renderCart();
+</script>
+</body>
+</html>
